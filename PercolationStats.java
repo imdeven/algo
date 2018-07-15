@@ -1,3 +1,5 @@
+import edu.princeton.cs.algs4.StdIn;
+import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
@@ -29,7 +31,7 @@ public class PercolationStats {
                     percolation.open(randRow, randCol);
                 }
             }
-            fractionOfOpenSites[i] = (double) percolation.numberOfOpenSites() / n;
+            fractionOfOpenSites[i] = (double) percolation.numberOfOpenSites() / (n * n);
         }
     }
 
@@ -41,23 +43,31 @@ public class PercolationStats {
 
     // sample standard deviation of percolation threshold
     public double stddev() {
-        if (fractionOfOpenSites.length==1) return Double.NaN;
+        if (fractionOfOpenSites.length == 1) return Double.NaN;
         stddev = StdStats.stddev(fractionOfOpenSites);
         return stddev;
     }
 
     // low  endpoint of 95% confidence interval
     public double confidenceLo() {
+        confidenceLo = mean() - 1.96 * stddev() / Math.sqrt(fractionOfOpenSites.length);
         return confidenceLo;
     }
 
     // high endpoint of 95% confidence interval
     public double confidenceHi() {
+        confidenceHi = mean() + 1.96 * stddev() / Math.sqrt(fractionOfOpenSites.length);
         return confidenceHi;
     }
 
     // test client (described below)
     public static void main(String[] args) {
-
+        int n = StdIn.readInt();
+        int T = StdIn.readInt();
+        PercolationStats percolationStats = new PercolationStats(n, T);
+        StdOut.println("mean = " + percolationStats.mean());
+        StdOut.println("stddev = " + percolationStats.stddev());
+        StdOut.println("95% confidence interval = [" + percolationStats.confidenceLo() +
+                ", " + percolationStats.confidenceHi() + "]");
     }
 }
